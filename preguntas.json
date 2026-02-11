@@ -1,0 +1,20 @@
+[
+  {
+    "question": "¿Qué indica una señal triangular con borde rojo?",
+    "answers": ["Prohibición", "Peligro", "Obligación", "Información"],
+    "correct": 1,
+    "tema": "Señales"
+  },
+  {
+    "question": "¿Velocidad máxima en autopista para turismos?",
+    "answers": ["90 km/h", "100 km/h", "120 km/h", "140 km/h"],
+    "correct": 2,
+    "tema": "Velocidad"
+  },
+  {
+    "question": "¿Quién tiene prioridad en una rotonda?",
+    "answers": ["El que entra", "El que ya circula", "El más rápido", "El más grande"],
+    "correct": 1,
+    "tema": "Prioridad"
+  }
+]
