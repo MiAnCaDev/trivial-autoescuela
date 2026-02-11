@@ -134,21 +134,32 @@ function loadQuestion(){
 }
 
 function checkAnswer(i){
+
+    const buttons = document.querySelectorAll("#answers button");
+
+    buttons.forEach((btn,index)=>{
+        if(index === questions[current].correct){
+            btn.style.background = "#16a34a"; // verde correcto
+        } else {
+            btn.style.background = "#dc2626"; // rojo incorrecto
+        }
+        btn.disabled = true;
+    });
+
     if(i === questions[current].correct){
         score++;
-        alert("✅ Correcto");
-    } else {
-        alert("❌ Incorrecto");
     }
 
-    current++;
+    setTimeout(()=>{
+        current++;
 
-    if(current >= questions.length){
-        document.getElementById("quiz").innerHTML =
-            "<div class='result'>Resultado final: "+score+"/"+questions.length+"</div>";
-    } else {
-        loadQuestion();
-    }
+        if(current >= questions.length){
+            document.getElementById("quiz").innerHTML =
+                "<div class='result'>Resultado final: "+score+"/"+questions.length+"</div>";
+        } else {
+            loadQuestion();
+        }
+    },1000);
 }
 
 </script>
