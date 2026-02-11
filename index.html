@@ -152,6 +152,10 @@ function checkAnswer(i){
 
     if(i === questions[current].correct){
         score++;
+        alert("✅ Correcto");
+    }
+    else { 
+        alert("❌ Incorrecto"); 
     }
 
     setTimeout(()=>{
@@ -163,7 +167,7 @@ function checkAnswer(i){
         } else {
             loadQuestion();
         }
-    },1000);
+    },3000);
 }
 
 </script>
