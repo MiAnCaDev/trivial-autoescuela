@@ -125,7 +125,10 @@ body{
     </div>
 
     <div class="app-body" id="quiz">
-
+        <div id="timer" style="text-align:right;font-weight:bold;margin-bottom:10px;color:#dc2626;">
+            ⏱ 60s
+        </div>
+        
         <div class="question" id="question"></div>
 
         <div class="answers" id="answers"></div>
@@ -144,6 +147,9 @@ let questions = [];
 let current = 0;
 let score = 0;
 
+let timer;
+let timeLeft = 60;
+
 fetch("preguntas.json")
 .then(res => res.json())
 .then(data => {
@@ -154,6 +160,7 @@ fetch("preguntas.json")
 function loadQuestion(){
 
     const q = questions[current];
+    timeLeft = 60;
 
     document.getElementById("question").innerText =
         (current+1) + ". " + q.question;
@@ -170,9 +177,28 @@ function loadQuestion(){
 
     document.getElementById("bar").style.width =
         ((current)/questions.length)*100 + "%";
+
+    startTimer();
+}
+
+function startTimer(){
+
+    document.getElementById("timer").innerText = "⏱ 60s";
+
+    timer = setInterval(()=>{
+        timeLeft--;
+        document.getElementById("timer").innerText = "⏱ " + timeLeft + "s";
+
+        if(timeLeft <= 0){
+            clearInterval(timer);
+            nextQuestion();
+        }
+    },1000);
 }
 
 function checkAnswer(i,button){
+
+    clearInterval(timer);
 
     const buttons = document.querySelectorAll(".answers button");
 
@@ -191,27 +217,32 @@ function checkAnswer(i,button){
     }
 
     setTimeout(()=>{
-        current++;
-
-        if(current >= questions.length){
-            showResult();
-        } else {
-            loadQuestion();
-        }
+        nextQuestion();
     },1000);
+}
+
+function nextQuestion(){
+    current++;
+
+    if(current >= questions.length){
+        showResult();
+    } else {
+        loadQuestion();
+    }
 }
 
 function showResult(){
     document.getElementById("quiz").innerHTML =
-        `<div class="result">
+        '<div class="result">
             Resultado final<br><br>
             ${score} / ${questions.length}
             <br><br>
             <button class="restart" onclick="location.reload()">Repetir Test</button>
-        </div>`;
+        </div>';
 }
 
 </script>
+
 
 </body>
 </html>
