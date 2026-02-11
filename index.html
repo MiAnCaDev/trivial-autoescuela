@@ -235,13 +235,13 @@ function nextQuestion(){
 }
 
 function showResult(){
-     document.getElementById("quiz").innerHTML =
-        "<div class=\"result\">
+    document.getElementById("quiz").innerHTML =
+        `<div class="result">
             Resultado final<br><br>
             ${score} / ${questions.length}
             <br><br>
-            <button class=\"restart\" onclick=\"location.reload()\">Repetir Test</button>
-        </div>";
+            <button class="restart" onclick="location.reload()">Repetir Test</button>
+        </div>`;
 }
 
 </script>
