@@ -118,7 +118,6 @@ let questions = [];
 let current = 0;
 let score = 0;
 
-document.getElementById("scoreLive").innerText = "Aciertos: " + score;
 
 fetch("preguntas.json")
 .then(res => res.json())
@@ -177,6 +176,8 @@ function checkAnswer(i){
         } else {
             loadQuestion();
         }
+
+        document.getElementById("scoreLive").innerText = "Aciertos: " + score;
     },3000);
 }
 
