@@ -45,8 +45,9 @@ nav a{
 .card{
     background:white;
     padding:30px;
-    border-radius:10px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+    transition:0.3s;
 }
 
 h2{
@@ -103,8 +104,11 @@ button:hover{
         <h2>Test Seguridad Vial</h2>
         <p id="question"></p>
         <div id="answers"></div>
-        <div class="progress" id="progress"></div>
         <div class="progress" id="scoreLive"></div>
+        <div class="progress" id="progress"></div>
+        <div style="background:#ddd;height:8px;border-radius:5px;">
+            <div id="bar" style="height:8px;width:0%;background:#39b061;border-radius:5px;"></div>
+        </div>
     </div>
 </div>
 
@@ -138,6 +142,9 @@ function loadQuestion(){
         btn.onclick = ()=>checkAnswer(i);
         answersDiv.appendChild(btn);
     });
+
+    document.getElementById("bar").style.width = ((current)/questions.length)*100 + "%";
+
 }
 
 function checkAnswer(i){
