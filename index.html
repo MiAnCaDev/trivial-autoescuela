@@ -9,82 +9,108 @@
 
 body{
     margin:0;
-    font-family: Arial, Helvetica, sans-serif;
-    background:#f4f6f9;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg,#39b061,#2f9d54);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+/* CONTENEDOR TIPO MOVIL */
+.app{
+    width:100%;
+    max-width:420px;
+    height:95vh;
+    background:white;
+    border-radius:25px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.2);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
 }
 
 /* HEADER */
-header{
+.app-header{
     background:#39b061;
     color:white;
-    padding:15px 30px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-}
-
-.logo{
-    font-size:22px;
-    font-weight:bold;
-}
-
-nav a{
-    color:white;
-    text-decoration:none;
-    margin-left:20px;
-    font-size:14px;
-}
-
-/* QUIZ CARD */
-.container{
-    max-width:800px;
-    margin:40px auto;
     padding:20px;
+    text-align:center;
+    font-weight:bold;
+    font-size:18px;
 }
 
-.card{
-    background:white;
-    padding:30px;
-    border-radius:12px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.08);
-    transition:0.3s;
+/* CONTENIDO */
+.app-body{
+    flex:1;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
 }
 
-h2{
-    color:#1e3a8a;
+.question{
+    font-size:18px;
+    margin-bottom:20px;
 }
 
-button{
+.answers button{
     width:100%;
-    padding:12px;
-    margin:8px 0;
+    padding:15px;
+    margin-bottom:10px;
     border:none;
-    border-radius:6px;
+    border-radius:12px;
     font-size:16px;
+    background:#f2f2f2;
     cursor:pointer;
-    background:#39b061;
+    transition:0.2s;
+}
+
+.answers button:hover{
+    background:#e5e5e5;
+}
+
+.correct{
+    background:#16a34a !important;
     color:white;
+}
+
+.incorrect{
+    background:#dc2626 !important;
+    color:white;
+}
+
+/* PROGRESO */
+.progress-container{
+    height:8px;
+    background:#eee;
+    border-radius:5px;
+    margin-top:auto;
+}
+
+.progress-bar{
+    height:8px;
+    width:0%;
+    background:#39b061;
+    border-radius:5px;
     transition:0.3s;
 }
 
-button:hover{
-    background:#2f9d54;
-}
-
-.progress{
-    margin-top:15px;
-    font-size:14px;
-    color:#555;
-}
-
+/* RESULTADO */
 .result{
     text-align:center;
     font-size:22px;
-    color:#1e3a8a;
+    margin-top:40px;
 }
 
-.logo img{
-    width: 7.5vw;
+.restart{
+    margin-top:20px;
+    padding:12px;
+    background:#39b061;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
 }
 
 </style>
@@ -92,24 +118,24 @@ button:hover{
 
 <body>
 
-<header>
-    <div class="logo"><img src="https://www.tuteoricoporlibre.com/wp-content/uploads/2021/03/logorec.png"/></div>
-    <nav>
-        <a href="https://www.tuteoricoporlibre.com/">Inicio</a>
-    </nav>
-</header>
+<div class="app">
 
-<div class="container">
-    <div class="card" id="quiz">
-        <h2>Test Seguridad Vial</h2>
-        <p id="question"></p>
-        <div id="answers"></div>
-        <div class="progress" id="scoreLive"></div>
-        <div class="progress" id="progress"></div>
-        <div style="background:#ddd;height:8px;border-radius:5px;">
-            <div id="bar" style="height:8px;width:0%;background:#39b061;border-radius:5px;"></div>
-        </div>
+    <div class="app-header">
+        <a href="https://www.tuteoricoporlibre.com/">TuTeóricoPorLibre</a>: Test
     </div>
+
+    <div class="app-body" id="quiz">
+
+        <div class="question" id="question"></div>
+
+        <div class="answers" id="answers"></div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="bar"></div>
+        </div>
+
+    </div>
+
 </div>
 
 <script>
@@ -117,7 +143,6 @@ button:hover{
 let questions = [];
 let current = 0;
 let score = 0;
-
 
 fetch("preguntas.json")
 .then(res => res.json())
@@ -127,10 +152,11 @@ fetch("preguntas.json")
 });
 
 function loadQuestion(){
+
     const q = questions[current];
-    document.getElementById("question").innerText = q.question;
-    document.getElementById("progress").innerText =
-        "Pregunta " + (current+1) + " de " + questions.length;
+
+    document.getElementById("question").innerText =
+        (current+1) + ". " + q.question;
 
     const answersDiv = document.getElementById("answers");
     answersDiv.innerHTML="";
@@ -138,47 +164,51 @@ function loadQuestion(){
     q.answers.forEach((ans,i)=>{
         let btn = document.createElement("button");
         btn.innerText = ans;
-        btn.onclick = ()=>checkAnswer(i);
+        btn.onclick = ()=>checkAnswer(i,btn);
         answersDiv.appendChild(btn);
     });
 
-    document.getElementById("bar").style.width = ((current)/questions.length)*100 + "%";
-
+    document.getElementById("bar").style.width =
+        ((current)/questions.length)*100 + "%";
 }
 
-function checkAnswer(i){
+function checkAnswer(i,button){
 
-    const buttons = document.querySelectorAll("#answers button");
+    const buttons = document.querySelectorAll(".answers button");
 
     buttons.forEach((btn,index)=>{
-        if(index === questions[current].correct){
-            btn.style.background = "#16a34a"; // verde correcto
-        } else {
-            btn.style.background = "#dc2626"; // rojo incorrecto
-        }
         btn.disabled = true;
+
+        if(index === questions[current].correct){
+            btn.classList.add("correct");
+        }
     });
 
-    if(i === questions[current].correct){
+    if(i !== questions[current].correct){
+        button.classList.add("incorrect");
+    } else {
         score++;
-        alert("✅ Correcto");
-    }
-    else { 
-        alert("❌ Incorrecto"); 
     }
 
     setTimeout(()=>{
         current++;
 
         if(current >= questions.length){
-            document.getElementById("quiz").innerHTML =
-                "<div class='result'>Resultado final: "+score+"/"+questions.length+"</div>";
+            showResult();
         } else {
             loadQuestion();
         }
+    },1000);
+}
 
-        document.getElementById("scoreLive").innerText = "Aciertos: " + score;
-    },3000);
+function showResult(){
+    document.getElementById("quiz").innerHTML =
+        `<div class="result">
+            Resultado final<br><br>
+            ${score} / ${questions.length}
+            <br><br>
+            <button class="restart" onclick="location.reload()">Repetir Test</button>
+        </div>`;
 }
 
 </script>
