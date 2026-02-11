@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Test Autoescuela</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+    margin:0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(135deg,#39b061,#2f9d54);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+/* CONTENEDOR TIPO MOVIL */
+.app{
+    width:100%;
+    max-width:420px;
+    height:95vh;
+    background:white;
+    border-radius:25px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.2);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+
+/* HEADER */
+.app-header{
+    background:#39b061;
+    color:white;
+    padding:20px;
+    text-align:center;
+    font-weight:bold;
+    font-size:18px;
+}
+
+/* CONTENIDO */
+.app-body{
+    flex:1;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+}
+
+.question{
+    font-size:18px;
+    margin-bottom:20px;
+}
+
+.answers button{
+    width:100%;
+    padding:15px;
+    margin-bottom:10px;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    background:#f2f2f2;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.answers button:hover{
+    background:#e5e5e5;
+}
+
+.correct{
+    background:#16a34a !important;
+    color:white;
+}
+
+.incorrect{
+    background:#dc2626 !important;
+    color:white;
+}
+
+/* PROGRESO */
+.progress-container{
+    height:8px;
+    background:#eee;
+    border-radius:5px;
+    margin-top:auto;
+}
+
+.progress-bar{
+    height:8px;
+    width:0%;
+    background:#39b061;
+    border-radius:5px;
+    transition:0.3s;
+}
+
+/* RESULTADO */
+.result{
+    text-align:center;
+    font-size:22px;
+    margin-top:40px;
+}
+
+.restart{
+    margin-top:20px;
+    padding:12px;
+    background:#39b061;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="app-header">
+        🚗 Test Seguridad Vial
+    </div>
+
+    <div class="app-body" id="quiz">
+
+        <div class="question" id="question"></div>
+
+        <div class="answers" id="answers"></div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="bar"></div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let questions = [];
+let current = 0;
+let score = 0;
+
+fetch("preguntas.json")
+.then(res => res.json())
+.then(data => {
+    questions = data.sort(()=>Math.random()-0.5).slice(0,30);
+    loadQuestion();
+});
+
+function loadQuestion(){
+
+    const q = questions[current];
+
+    document.getElementById("question").innerText =
+        (current+1) + ". " + q.question;
+
+    const answersDiv = document.getElementById("answers");
+    answersDiv.innerHTML="";
+
+    q.answers.forEach((ans,i)=>{
+        let btn = document.createElement("button");
+        btn.innerText = ans;
+        btn.onclick = ()=>checkAnswer(i,btn);
+        answersDiv.appendChild(btn);
+    });
+
+    document.getElementById("bar").style.width =
+        ((current)/questions.length)*100 + "%";
+}
+
+function checkAnswer(i,button){
+
+    const buttons = document.querySelectorAll(".answers button");
+
+    buttons.forEach((btn,index)=>{
+        btn.disabled = true;
+
+        if(index === questions[current].correct){
+            btn.classList.add("correct");
+        }
+    });
+
+    if(i !== questions[current].correct){
+        button.classList.add("incorrect");
+    } else {
+        score++;
+    }
+
+    setTimeout(()=>{
+        current++;
+
+        if(current >= questions.length){
+            showResult();
+        } else {
+            loadQuestion();
+        }
+    },1000);
+}
+
+function showResult(){
+    document.getElementById("quiz").innerHTML =
+        `<div class="result">
+            Resultado final<br><br>
+            ${score} / ${questions.length}
+            <br><br>
+            <button class="restart" onclick="location.reload()">Repetir Test</button>
+        </div>`;
+}
+
+</script>
+
+</body>
+</html>
