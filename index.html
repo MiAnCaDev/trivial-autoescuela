@@ -2,21 +2,107 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Trivial Autoescuela</title>
+<title>Test Autoescuela</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-body { font-family: Arial; text-align:center; background:#f2f2f2; }
-#quiz { background:white; padding:20px; margin:40px auto; width:90%; max-width:700px; border-radius:10px; }
-button { display:block; margin:10px auto; padding:10px; width:80%; }
+
+body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f4f6f9;
+}
+
+/* HEADER */
+header{
+    background:#1e3a8a;
+    color:white;
+    padding:15px 30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:bold;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+    font-size:14px;
+}
+
+/* QUIZ CARD */
+.container{
+    max-width:800px;
+    margin:40px auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+h2{
+    color:#1e3a8a;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border:none;
+    border-radius:6px;
+    font-size:16px;
+    cursor:pointer;
+    background:#dc2626;
+    color:white;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#b91c1c;
+}
+
+.progress{
+    margin-top:15px;
+    font-size:14px;
+    color:#555;
+}
+
+.result{
+    text-align:center;
+    font-size:22px;
+    color:#1e3a8a;
+}
+
 </style>
 </head>
+
 <body>
 
-<div id="quiz">
-<h2>🚗 Trivial Seguridad Vial</h2>
-<p id="question"></p>
-<div id="answers"></div>
-<p id="progress"></p>
-<p id="score"></p>
+<header>
+    <div class="logo">🚗 TU TEÓRICO POR LIBRE</div>
+    <nav>
+        <a href="#">Inicio</a>
+        <a href="#">Tests</a>
+        <a href="#">Contacto</a>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="card" id="quiz">
+        <h2>Test Seguridad Vial</h2>
+        <p id="question"></p>
+        <div id="answers"></div>
+        <div class="progress" id="progress"></div>
+    </div>
 </div>
 
 <script>
@@ -28,18 +114,14 @@ let score = 0;
 fetch("preguntas.json")
 .then(res => res.json())
 .then(data => {
-    questions = shuffle(data).slice(0, 20); // 20 por partida
+    questions = data.sort(()=>Math.random()-0.5).slice(0,30);
     loadQuestion();
 });
-
-function shuffle(array){
-    return array.sort(()=>Math.random()-0.5);
-}
 
 function loadQuestion(){
     const q = questions[current];
     document.getElementById("question").innerText = q.question;
-    document.getElementById("progress").innerText = 
+    document.getElementById("progress").innerText =
         "Pregunta " + (current+1) + " de " + questions.length;
 
     const answersDiv = document.getElementById("answers");
@@ -62,14 +144,16 @@ function checkAnswer(i){
     }
 
     current++;
+
     if(current >= questions.length){
         document.getElementById("quiz").innerHTML =
-            "<h2>Resultado final: "+score+"/"+questions.length+"</h2>";
+            "<div class='result'>Resultado final: "+score+"/"+questions.length+"</div>";
     } else {
         loadQuestion();
     }
 }
 
 </script>
+
 </body>
 </html>
