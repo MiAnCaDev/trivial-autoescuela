@@ -104,6 +104,7 @@ button:hover{
         <p id="question"></p>
         <div id="answers"></div>
         <div class="progress" id="progress"></div>
+        <div class="progress" id="scoreLive"></div>
     </div>
 </div>
 
@@ -112,6 +113,8 @@ button:hover{
 let questions = [];
 let current = 0;
 let score = 0;
+
+document.getElementById("scoreLive").innerText = "Aciertos: " + score;
 
 fetch("preguntas.json")
 .then(res => res.json())
